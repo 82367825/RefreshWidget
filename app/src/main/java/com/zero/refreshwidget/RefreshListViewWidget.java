@@ -21,17 +21,14 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
     
     public RefreshListViewWidget(Context context) {
         super(context);
-//        init();
     }
 
     public RefreshListViewWidget(Context context, AttributeSet attrs) {
         super(context, attrs);
-//        init();
     }
 
     public RefreshListViewWidget(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-//        init();
     }
 
     private View mHeaderView;
