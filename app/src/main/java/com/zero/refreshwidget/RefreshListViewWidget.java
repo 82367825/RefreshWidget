@@ -3,6 +3,7 @@ package com.zero.refreshwidget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -45,6 +46,15 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
     
     private int mHeaderWidth;
     private int mHeaderHeight;
+    
+    private int mFooterWidth;
+    private int mFooterHeight;
+
+    /**
+     * Distance in pixels a touch can wander before we think the user is scrolling
+     * <br>判断为触摸移动的距离
+     */
+    private int mTouchSlop;
 
     @Override
     protected void onFinishInflate() {
@@ -53,6 +63,7 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
     }
 
     private void init() {
+        mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         mHeaderView = new HeaderTextView(getContext());
         mHeaderLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
                 .LayoutParams.WRAP_CONTENT);
@@ -125,6 +136,8 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
                 break;
             case MotionEvent.ACTION_MOVE:
                 mMoveY = ev.getY();
+                /* 如果不属于触摸滑动，则跳出 */
+                if (Math.abs(mDownY - mMoveY) < mTouchSlop) return false; 
                 /* 如果处于顶部，且继续下拉，进入下拉刷新状态,同时拦截触摸事件 */
                 if (mCurrentStatus == STATUS_NORMAL && isReachHeader() && mMoveY - mDownY > 0) {
                     mCurrentStatus = STATUS_REFRESH;
@@ -149,12 +162,12 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
                 /* 下拉刷新状态 */
                 if (mCurrentStatus == STATUS_REFRESH || mCurrentStatus == STATUS_RELEASE_TO_REFRESH) {
                     if (mMoveY - mDownY < 0) break;
-                    if (mMoveY - mDownY > mHeaderHeight) {
+                    if (mMoveY - mDownY > mHeaderHeight * 2) {
                         mCurrentStatus = STATUS_RELEASE_TO_REFRESH;
                         setHeaderViewMargin(0);
                     } else {
                         mCurrentStatus = STATUS_REFRESH;
-                        setHeaderViewMargin((int) (mDownY - mMoveY));
+                        setHeaderViewMargin((int) (mDownY - mMoveY) / 2);
                     }
                 } 
                 /* 上拉加载状态 */

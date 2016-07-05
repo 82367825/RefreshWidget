@@ -24,7 +24,7 @@ public class HeaderTextView extends BaseHeader implements HeaderInterface{
     
     private final static int TEXT_SIZE = 10;
     
-    private final static int TEXT_PADDING = 10;
+    private final static int TEXT_PADDING = 15;
     
     private TextView mTextView;
     
