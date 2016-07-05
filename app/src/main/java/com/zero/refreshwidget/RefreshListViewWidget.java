@@ -2,6 +2,7 @@ package com.zero.refreshwidget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -32,6 +33,8 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
     public RefreshListViewWidget(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+    
+    private static final String TAG = "RefreshListViewWidget";
 
     private BaseHeader mHeaderView;
     private BaseFooter mFooterView;
@@ -47,8 +50,12 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
     private int mHeaderWidth;
     private int mHeaderHeight;
     
+    private float mHeaderPullProportion = 1.5f;
+    
     private int mFooterWidth;
     private int mFooterHeight;
+    
+    private float mFooterPullProportion = 1.5f;
 
     /**
      * Distance in pixels a touch can wander before we think the user is scrolling
@@ -128,15 +135,17 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
     private float mDownY;
     private float mMoveY;
     
+    
+    
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mDownY = ev.getY();
+                mDownY = ev.getRawY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                mMoveY = ev.getY();
-                /* 如果不属于触摸滑动，则跳出 */
+                mMoveY = ev.getRawY();
+                /* 如果不属于触摸滑动范围，则跳出 */
                 if (Math.abs(mDownY - mMoveY) < mTouchSlop) return false; 
                 /* 如果处于顶部，且继续下拉，进入下拉刷新状态,同时拦截触摸事件 */
                 if (mCurrentStatus == STATUS_NORMAL && isReachHeader() && mMoveY - mDownY > 0) {
@@ -149,25 +158,44 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
                 }
                 break;
         }
+        /* 其他情况不拦截，默认返回false */
         return super.onInterceptTouchEvent(ev);
     }
-
+    
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                break;
             case MotionEvent.ACTION_MOVE:
-                mMoveY = event.getY();
-                /* 下拉刷新状态 */
-                if (mCurrentStatus == STATUS_REFRESH || mCurrentStatus == STATUS_RELEASE_TO_REFRESH) {
-                    if (mMoveY - mDownY < 0) break;
-                    if (mMoveY - mDownY > mHeaderHeight * 2) {
+                mMoveY = event.getRawY();
+//                /* 下拉刷新状态 且正在向下滑动 */
+//                if (mCurrentStatus == STATUS_REFRESH && mMoveY - mDownY >= 0) {
+//                    if (Math.abs(mMoveY - mDownY) < mHeaderHeight * mHeaderPullProportion) {
+//                        mCurrentStatus = STATUS_REFRESH;
+//                    } else {
+//                        mCurrentStatus = STATUS_RELEASE_TO_REFRESH;
+//                    }
+//                } else if (mCurrentStatus == STATUS_RELEASE_TO_REFRESH && mMoveY - mDownY >= 0) {
+//                    /* 下拉松手刷新状态 且正在向下滑动 */
+//                    if (Math.abs(mMoveY - mDownY) < mHeaderHeight * mHeaderPullProportion) {
+//                        mCurrentStatus = STATUS_REFRESH;
+//                    } else {
+//                        mCurrentStatus = STATUS_RELEASE_TO_REFRESH;
+//                    }
+//                }
+
+                Log.i(TAG, "DownY:" + mDownY);
+                Log.i(TAG, "MoveY:" + mMoveY);
+                Log.i(TAG, "HeaderHeight:" + mHeaderHeight);
+                
+                /* 下拉刷新状态 且正在向下滑动 */
+                if ((mCurrentStatus == STATUS_REFRESH || mCurrentStatus == STATUS_RELEASE_TO_REFRESH)
+                        && mMoveY - mDownY >= 0) {
+                    if (mMoveY - mDownY > mHeaderHeight * mHeaderPullProportion) {
                         mCurrentStatus = STATUS_RELEASE_TO_REFRESH;
                         setHeaderViewMargin(0);
                     } else {
                         mCurrentStatus = STATUS_REFRESH;
-                        setHeaderViewMargin((int) (mDownY - mMoveY) / 2);
+                        setHeaderViewMargin((int) ((mDownY - mMoveY) / mHeaderPullProportion));
                     }
                 } 
                 /* 上拉加载状态 */
