@@ -3,13 +3,14 @@ package com.zero.refreshwidget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
+
+import com.zero.refreshwidget.footer.BaseFooter;
+import com.zero.refreshwidget.header.BaseHeader;
 import com.zero.refreshwidget.header.HeaderTextView;
 
 /**
@@ -31,8 +32,8 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
         super(context, attrs, defStyleAttr);
     }
 
-    private View mHeaderView;
-    private View mFooterView;
+    private BaseHeader mHeaderView;
+    private BaseFooter mFooterView;
     private ListView mContentView;
     
     private LayoutParams mHeaderLayoutParams;
@@ -55,19 +56,28 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
         mHeaderView = new HeaderTextView(getContext());
         mHeaderLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
                 .LayoutParams.WRAP_CONTENT);
-        ((HeaderTextView)mHeaderView).onRefresh(0);
+        mHeaderView.onRefresh(0);
         addView(mHeaderView, mHeaderLayoutParams);
         mContentView = new ListView(getContext());
         mContentLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
                 .LayoutParams.WRAP_CONTENT);
         addView(mContentView, mContentLayoutParams);
-        mFooterView = new TextView(getContext());
-        mFooterLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
-                .LayoutParams.WRAP_CONTENT);
-        addView(mFooterView, mFooterLayoutParams);
+        
+//        mFooterView = new HeaderTextView(getContext());
+//        mFooterLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
+//                .LayoutParams.WRAP_CONTENT);
+//        addView(mFooterView, mFooterLayoutParams);
 
         mCurrentStatus = STATUS_NORMAL;
         mContentView.setOnScrollListener(this);
+    }
+    
+    public void addHeaderView() {
+        
+    }
+    
+    public void addFooterView() {
+        
     }
     
     public void setAdapter(BaseAdapter adapter) {
