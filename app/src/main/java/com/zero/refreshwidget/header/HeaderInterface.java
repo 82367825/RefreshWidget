@@ -15,5 +15,10 @@ public interface HeaderInterface {
      * 松手刷新
      */
     void onReleaseToRefresh();
+
+    /**
+     * 正在刷新
+     */
+    void onRefreshing();
     
 }

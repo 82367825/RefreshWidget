@@ -16,9 +16,13 @@ public abstract class RefreshWidget extends LinearLayout implements RefreshInter
     
     protected final static int STATUS_RELEASE_TO_REFRESH = 0x03;
     
-    protected final static int STATUS_LOAD_MORE = 0x04;
+    protected final static int STATUS_REFRESH_ING = 0x04;
     
-    protected final static int STATUS_RELEASE_TO_LOAD_MORE = 0x05;
+    protected final static int STATUS_LOAD_MORE = 0x05;
+    
+    protected final static int STATUS_RELEASE_TO_LOAD_MORE = 0x06;
+    
+    protected final static int STATUS_LOAD_MORE_ING = 0x07;
     
     protected int mCurrentStatus;
     
@@ -29,6 +33,10 @@ public abstract class RefreshWidget extends LinearLayout implements RefreshInter
     protected int mDistanceToRefresh;
     
     protected int mDistanceToLoadMore;
+    
+    protected int mCurrentHeaderTopMargin;
+    
+    protected int mCurrentFooterTopMargin;
     
     protected boolean mRefreshEnabled = true;
     

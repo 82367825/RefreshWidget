@@ -1,16 +1,16 @@
 package com.zero.refreshwidget;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
+import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-
 import com.zero.refreshwidget.footer.BaseFooter;
 import com.zero.refreshwidget.header.BaseHeader;
 import com.zero.refreshwidget.header.HeaderTextView;
@@ -20,7 +20,7 @@ import com.zero.refreshwidget.header.HeaderTextView;
  * @author linzewu
  * @date 16-6-29
  */
-public class RefreshListViewWidget extends RefreshWidget implements AbsListView.OnScrollListener{
+public class RefreshListViewWidget extends RefreshWidget{
     
     public RefreshListViewWidget(Context context) {
         super(context);
@@ -50,7 +50,7 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
     private int mHeaderWidth;
     private int mHeaderHeight;
     
-    private float mHeaderPullProportion = 1.5f;
+    private float mHeaderPullProportion = 3f;
     
     private int mFooterWidth;
     private int mFooterHeight;
@@ -58,10 +58,21 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
     private float mFooterPullProportion = 1.5f;
 
     /**
+     * The Handler of the Main Thread
+     */
+    private Handler mMainThreadHandler = new Handler();
+
+    /**
      * Distance in pixels a touch can wander before we think the user is scrolling
      * <br>判断为触摸移动的距离
-     */
+     */ 
     private int mTouchSlop;
+    
+    private RefreshListener mRefreshListener;
+    
+    public void setRefreshListener(RefreshListener refreshListener) {
+        this.mRefreshListener = refreshListener;
+    }
 
     @Override
     protected void onFinishInflate() {
@@ -87,7 +98,38 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
 //        addView(mFooterView, mFooterLayoutParams);
 
         mCurrentStatus = STATUS_NORMAL;
-        mContentView.setOnScrollListener(this);
+    }
+
+    private long mRefreshCompleteDuration = 300;
+    
+    /**
+     * 刷新完成, 回弹
+     */
+    public void refreshComplete() {
+        mMainThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, -mHeaderHeight);
+                valueAnimator.setDuration(mRefreshCompleteDuration);
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        float value = (float) animation.getAnimatedValue();
+                        setHeaderTopMargin((int) value);
+                    }
+                });
+                valueAnimator.setInterpolator(new LinearInterpolator());
+                valueAnimator.start();
+            }
+        });
+        mCurrentStatus = STATUS_NORMAL;
+    }
+
+    /**
+     * 加载更多完成
+     */
+    public void loadMoreComplete() {
+        
     }
     
     public void addHeaderView() {
@@ -135,8 +177,6 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
     private float mDownY;
     private float mMoveY;
     
-    
-    
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
@@ -146,12 +186,14 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
             case MotionEvent.ACTION_MOVE:
                 mMoveY = ev.getRawY();
                 /* 如果不属于触摸滑动范围，则跳出 */
-                if (Math.abs(mDownY - mMoveY) < mTouchSlop) return false; 
+                if (Math.abs(mDownY - mMoveY) < mTouchSlop) return false;
+
                 /* 如果处于顶部，且继续下拉，进入下拉刷新状态,同时拦截触摸事件 */
                 if (mCurrentStatus == STATUS_NORMAL && isReachHeader() && mMoveY - mDownY > 0) {
                     mCurrentStatus = STATUS_REFRESH;
+                    mHeaderView.onRefresh(0);
                     return true;
-                } else if (mCurrentStatus == STATUS_NORMAL && isReachFoot() && mMoveY - mDownY < 0) {
+                } else if (mCurrentStatus == STATUS_NORMAL && isReachFooter() && mMoveY - mDownY < 0) {
                     /* 如果处于底部，且继续上拉，进入上拉加载更多状态，同时拦截触摸事件 */
                     mCurrentStatus = STATUS_LOAD_MORE;
                     return true;
@@ -167,35 +209,17 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
         switch (event.getAction()) {
             case MotionEvent.ACTION_MOVE:
                 mMoveY = event.getRawY();
-//                /* 下拉刷新状态 且正在向下滑动 */
-//                if (mCurrentStatus == STATUS_REFRESH && mMoveY - mDownY >= 0) {
-//                    if (Math.abs(mMoveY - mDownY) < mHeaderHeight * mHeaderPullProportion) {
-//                        mCurrentStatus = STATUS_REFRESH;
-//                    } else {
-//                        mCurrentStatus = STATUS_RELEASE_TO_REFRESH;
-//                    }
-//                } else if (mCurrentStatus == STATUS_RELEASE_TO_REFRESH && mMoveY - mDownY >= 0) {
-//                    /* 下拉松手刷新状态 且正在向下滑动 */
-//                    if (Math.abs(mMoveY - mDownY) < mHeaderHeight * mHeaderPullProportion) {
-//                        mCurrentStatus = STATUS_REFRESH;
-//                    } else {
-//                        mCurrentStatus = STATUS_RELEASE_TO_REFRESH;
-//                    }
-//                }
-
-                Log.i(TAG, "DownY:" + mDownY);
-                Log.i(TAG, "MoveY:" + mMoveY);
-                Log.i(TAG, "HeaderHeight:" + mHeaderHeight);
-                
                 /* 下拉刷新状态 且正在向下滑动 */
                 if ((mCurrentStatus == STATUS_REFRESH || mCurrentStatus == STATUS_RELEASE_TO_REFRESH)
                         && mMoveY - mDownY >= 0) {
                     if (mMoveY - mDownY > mHeaderHeight * mHeaderPullProportion) {
                         mCurrentStatus = STATUS_RELEASE_TO_REFRESH;
-                        setHeaderViewMargin(0);
+                        mHeaderView.onReleaseToRefresh();
+                        setHeaderTopMargin(0);
                     } else {
                         mCurrentStatus = STATUS_REFRESH;
-                        setHeaderViewMargin((int) ((mDownY - mMoveY) / mHeaderPullProportion));
+                        mHeaderView.onRefresh(0);
+                        setHeaderTopMargin(-mHeaderHeight + (int) ((mMoveY - mDownY) / mHeaderPullProportion));
                     }
                 } 
                 /* 上拉加载状态 */
@@ -206,12 +230,15 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
                 break;
             case MotionEvent.ACTION_UP:
                 if (mCurrentStatus == STATUS_RELEASE_TO_REFRESH) {
-
+                    mCurrentStatus = STATUS_LOAD_MORE;
+                    mHeaderView.onRefreshing();
+                    if (mRefreshListener != null) mRefreshListener.onRefresh();
                 } else if (mCurrentStatus == STATUS_RELEASE_TO_LOAD_MORE) {
 
+                } else {
+                    mCurrentStatus = STATUS_NORMAL;
+                    setHeaderTopMargin(-mHeaderHeight);
                 }
-                mCurrentStatus = STATUS_NORMAL;
-                setHeaderViewMargin(-mHeaderHeight);
                 break;
         }
         return true;
@@ -219,52 +246,27 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
 
     /**
      * 设置headerView的上边距，这里边距为负值
-     * @param margin
+     * @param margin 上边距
      */
-    private void setHeaderViewMargin(int margin) {
+    private void setHeaderTopMargin(int margin) {
         mHeaderLayoutParams.setMargins(0, margin, 0, 0);
         mHeaderView.setLayoutParams(mHeaderLayoutParams);
     }
     
-    private void setFooterViewMargin(int margin) {
+    private void setFooterBottomMargin(int margin) {
         
     }
 
     @Override
     public void setRefreshEnabled(boolean enabled) {
-        
+        this.mRefreshEnabled = enabled;
     }
 
     @Override
     public void setLoadMoreEnabled(boolean enabled) {
-
+        this.mLoadMoreEnabled = enabled;
     }
-
-    private int mCurrentScrollState;      //记录当前的滚动状态 
     
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        mCurrentScrollState = scrollState;
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (!mRefreshEnabled) {
-            return ;
-        }
-//        if (mCurrentStatus == STATUS_NORMAL && isReachHeader()) {
-//            
-//        } else if (mCurrentStatus == STATUS_REFRESH) {
-//            
-//        } else if (mCurrentStatus == STATUS_RELEASE_TO_REFRESH) {
-//            
-//        } else if (mCurrentStatus == STATUS_LOAD_MORE) {
-//            
-//        } else if (mCurrentStatus == STATUS_RELEASE_TO_LOAD_MORE) {
-//            
-//        }
-    }
-
     /**
      * 是否滑到了ListView的顶部
      * @return
@@ -277,7 +279,8 @@ public class RefreshListViewWidget extends RefreshWidget implements AbsListView.
      * 是否滑到了ListView的底部
      * @return 
      */
-    private boolean isReachFoot() {
+    private boolean isReachFooter() {
         return mContentView.getLastVisiblePosition() == mContentView.getCount() - 1;
     }
+    
 }

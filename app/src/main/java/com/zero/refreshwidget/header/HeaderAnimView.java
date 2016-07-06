@@ -1,6 +1,7 @@
 package com.zero.refreshwidget.header;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.util.AttributeSet;
 
 /**
@@ -9,6 +10,14 @@ import android.util.AttributeSet;
  */
 public class HeaderAnimView extends BaseHeader{
 
+    private static final int STATUS_START_TO_REFRESH = 1;
+    
+    private static final int STATUS_REFRESH_ING = 2;
+    
+    private int mCurrentStatus;
+    
+    private int mColor;
+    
     public HeaderAnimView(Context context) {
         super(context);
     }
@@ -22,6 +31,11 @@ public class HeaderAnimView extends BaseHeader{
     }
 
     @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+    }
+
+    @Override
     public void onRefresh(int percent) {
         
     }
@@ -29,5 +43,10 @@ public class HeaderAnimView extends BaseHeader{
     @Override
     public void onReleaseToRefresh() {
 
+    }
+
+    @Override
+    public void onRefreshing() {
+        
     }
 }

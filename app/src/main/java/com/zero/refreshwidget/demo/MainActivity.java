@@ -9,6 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import com.zero.refreshwidget.R;
 import com.zero.refreshwidget.RefreshListViewWidget;
+import com.zero.refreshwidget.RefreshListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +40,32 @@ public class MainActivity extends Activity {
         mList.add("text11");
         mList.add("text12");
         mRefreshListViewWidget.setAdapter(new DemoAdapter());
+        mRefreshListViewWidget.setRefreshListener(new RefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(3000);
+                            mRefreshListViewWidget.refreshComplete();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onLoadMore() {
+
+            }
+
+            @Override
+            public void onScrolling() {
+
+            }
+        });
     }
     
     private List<String> mList = new ArrayList<>();

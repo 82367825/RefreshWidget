@@ -20,6 +20,8 @@ public class HeaderTextView extends BaseHeader implements HeaderInterface{
     
     private final static String TEXT_RELEASE_TO_REFRESH = "松手刷新";
     
+    private final static String TEXT_REFRESHING = "正在刷新...";
+    
     private final static int TEXT_COLOR = 0x88000000;
     
     private final static int TEXT_SIZE = 10;
@@ -75,4 +77,16 @@ public class HeaderTextView extends BaseHeader implements HeaderInterface{
         setGravity(Gravity.CENTER);
         mTextView.setText(TEXT_RELEASE_TO_REFRESH);
     }
+
+    @Override
+    public void onRefreshing() {
+        mTextView.setTextColor(TEXT_COLOR);
+        mTextView.setTextSize(DrawUtils.dip2px(getContext(), TEXT_SIZE));
+        setPadding(DrawUtils.dip2px(getContext(), TEXT_PADDING), DrawUtils.dip2px(getContext(), TEXT_PADDING),
+                DrawUtils.dip2px(getContext(), TEXT_PADDING), DrawUtils.dip2px(getContext(), TEXT_PADDING));
+        setGravity(Gravity.CENTER);
+        mTextView.setText(TEXT_REFRESHING);
+    }
+    
+    
 }
