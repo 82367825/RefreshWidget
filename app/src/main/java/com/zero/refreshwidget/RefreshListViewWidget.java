@@ -14,7 +14,6 @@ import android.widget.ListView;
 import com.zero.refreshwidget.footer.BaseFooter;
 import com.zero.refreshwidget.header.BaseHeader;
 import com.zero.refreshwidget.header.HeaderAnimView;
-import com.zero.refreshwidget.header.HeaderTextView;
 
 /**
  * Refresh ListView
@@ -219,7 +218,7 @@ public class RefreshListViewWidget extends RefreshWidget{
                         setHeaderTopMargin(0);
                     } else {
                         mCurrentStatus = STATUS_REFRESH;
-                        mHeaderView.onRefresh((mMoveY- mDownY) / (float)mHeaderHeight * mHeaderPullProportion);
+                        mHeaderView.onRefresh((mMoveY- mDownY) / ((float)mHeaderHeight * mHeaderPullProportion));
                         setHeaderTopMargin(-mHeaderHeight + (int) ((mMoveY - mDownY) / mHeaderPullProportion));
                     }
                 } 
