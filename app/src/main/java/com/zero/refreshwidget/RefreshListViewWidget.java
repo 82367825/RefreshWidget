@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import com.zero.refreshwidget.footer.BaseFooter;
 import com.zero.refreshwidget.header.BaseHeader;
+import com.zero.refreshwidget.header.HeaderAnimView;
 import com.zero.refreshwidget.header.HeaderTextView;
 
 /**
@@ -82,7 +83,7 @@ public class RefreshListViewWidget extends RefreshWidget{
 
     private void init() {
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-        mHeaderView = new HeaderTextView(getContext());
+        mHeaderView = new HeaderAnimView(getContext());
         mHeaderLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
                 .LayoutParams.WRAP_CONTENT);
         mHeaderView.onRefresh(0);
@@ -218,7 +219,7 @@ public class RefreshListViewWidget extends RefreshWidget{
                         setHeaderTopMargin(0);
                     } else {
                         mCurrentStatus = STATUS_REFRESH;
-                        mHeaderView.onRefresh(0);
+                        mHeaderView.onRefresh((mMoveY- mDownY) / (float)mHeaderHeight * mHeaderPullProportion);
                         setHeaderTopMargin(-mHeaderHeight + (int) ((mMoveY - mDownY) / mHeaderPullProportion));
                     }
                 } 

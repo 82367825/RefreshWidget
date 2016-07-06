@@ -59,7 +59,7 @@ public class HeaderTextView extends BaseHeader implements HeaderInterface{
     
 
     @Override
-    public void onRefresh(int percent) {
+    public void onRefresh(float percent) {
         mTextView.setTextColor(TEXT_COLOR);
         mTextView.setTextSize(DrawUtils.dip2px(getContext(), TEXT_SIZE));
         setPadding(DrawUtils.dip2px(getContext(), TEXT_PADDING), DrawUtils.dip2px(getContext(), TEXT_PADDING),

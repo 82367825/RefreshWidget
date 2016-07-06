@@ -9,7 +9,7 @@ public interface HeaderInterface {
      * 正在下拉刷新
      * @param percent 下拉完成比例
      */
-    void onRefresh(int percent);
+    void onRefresh(float percent);
 
     /**
      * 松手刷新
