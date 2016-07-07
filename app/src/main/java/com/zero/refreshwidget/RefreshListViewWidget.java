@@ -4,6 +4,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -47,6 +48,7 @@ public class RefreshListViewWidget extends RefreshWidget{
     private int mWidth;
     private int mHeight;
     
+    
     private int mHeaderWidth;
     private int mHeaderHeight;
     
@@ -64,7 +66,6 @@ public class RefreshListViewWidget extends RefreshWidget{
 
     /**
      * Distance in pixels a touch can wander before we think the user is scrolling
-     * <br>判断为触摸移动的距离
      */ 
     private int mTouchSlop;
     
@@ -99,29 +100,12 @@ public class RefreshListViewWidget extends RefreshWidget{
 
         mCurrentStatus = STATUS_NORMAL;
     }
-
-    private long mRefreshCompleteDuration = 300;
     
     /**
      * 刷新完成, 回弹
      */
     public void refreshComplete() {
-        mMainThreadHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, -mHeaderHeight);
-                valueAnimator.setDuration(mRefreshCompleteDuration);
-                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        float value = (float) animation.getAnimatedValue();
-                        setHeaderTopMargin((int) value);
-                    }
-                });
-                valueAnimator.setInterpolator(new LinearInterpolator());
-                valueAnimator.start();
-            }
-        });
+        headerCompleteRefreshTask();
         mCurrentStatus = STATUS_NORMAL;
     }
 
@@ -216,10 +200,12 @@ public class RefreshListViewWidget extends RefreshWidget{
                         mCurrentStatus = STATUS_RELEASE_TO_REFRESH;
                         mHeaderView.onReleaseToRefresh();
                         setHeaderTopMargin(0);
+                        setHeaderBottomMargin((int) (mMoveY - mDownY - mHeaderHeight * mHeaderPullProportion));
                     } else {
                         mCurrentStatus = STATUS_REFRESH;
                         mHeaderView.onRefresh((mMoveY- mDownY) / ((float)mHeaderHeight * mHeaderPullProportion));
                         setHeaderTopMargin(-mHeaderHeight + (int) ((mMoveY - mDownY) / mHeaderPullProportion));
+                        setHeaderBottomMargin(0);
                     }
                 } 
                 /* 上拉加载状态 */
@@ -232,12 +218,15 @@ public class RefreshListViewWidget extends RefreshWidget{
                 if (mCurrentStatus == STATUS_RELEASE_TO_REFRESH) {
                     mCurrentStatus = STATUS_LOAD_MORE;
                     mHeaderView.onRefreshing();
+                    headerRefreshTask();
                     if (mRefreshListener != null) mRefreshListener.onRefresh();
                 } else if (mCurrentStatus == STATUS_RELEASE_TO_LOAD_MORE) {
 
-                } else {
+                } else if (mCurrentStatus == STATUS_REFRESH){
                     mCurrentStatus = STATUS_NORMAL;
-                    setHeaderTopMargin(-mHeaderHeight);
+                    headerCancelRefreshTask();
+                } else if (mCurrentStatus == STATUS_LOAD_MORE){
+                    
                 }
                 break;
         }
@@ -249,8 +238,22 @@ public class RefreshListViewWidget extends RefreshWidget{
      * @param margin 上边距
      */
     private void setHeaderTopMargin(int margin) {
-        mHeaderLayoutParams.setMargins(0, margin, 0, 0);
+        mHeaderLayoutParams.topMargin = margin;
         mHeaderView.setLayoutParams(mHeaderLayoutParams);
+    }
+
+    /**
+     * 设置headerView的下边距，这里边距为正值
+     * 为了保证下拉过程能够继续往下拉
+     * @param margin
+     */
+    private void setHeaderBottomMargin(int margin) {
+        mHeaderLayoutParams.bottomMargin = margin;
+        mHeaderView.setLayoutParams(mHeaderLayoutParams);
+    }
+    
+    private void setFooterTopMargin(int margin) {
+        
     }
     
     private void setFooterBottomMargin(int margin) {
@@ -283,4 +286,82 @@ public class RefreshListViewWidget extends RefreshWidget{
         return mContentView.getLastVisiblePosition() == mContentView.getCount() - 1;
     }
     
+    private static final long HEADER_CANCEL_REFRESH_TIME = 300;
+    
+    private static final long HEADER_REFRESH_TIME = 300;
+    
+    private static final long HEADER_COMPLETE_REFRESH_TIME = 300;
+
+    /**
+     * 下拉刷新任务
+     */
+    private void headerRefreshTask() {
+        final int value = mHeaderLayoutParams.bottomMargin;
+        mMainThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                ValueAnimator valueAnimator = ValueAnimator.ofFloat(value,
+                        0);
+                valueAnimator.setInterpolator(new LinearInterpolator());
+                valueAnimator.setDuration(HEADER_REFRESH_TIME);
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        float value = (float) animation.getAnimatedValue();
+                        setHeaderBottomMargin((int) value);
+                    }
+                });
+                valueAnimator.start();
+            }
+        });
+    }
+
+    /**
+     * 下拉刷新完成任务
+     */
+    private void headerCompleteRefreshTask() {
+        mMainThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, -mHeaderHeight);
+                valueAnimator.setDuration(HEADER_COMPLETE_REFRESH_TIME);
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        float value = (float) animation.getAnimatedValue();
+                        setHeaderTopMargin((int) value);
+                    }
+                });
+                valueAnimator.setInterpolator(new LinearInterpolator());
+                valueAnimator.start();
+            }
+        });
+    }
+
+    /**
+     * 取消下拉刷新任务
+     */
+    private void headerCancelRefreshTask() {
+        final int value = mHeaderLayoutParams.topMargin;
+        final float percentValue = mHeaderView.getPercent();
+        mMainThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                ValueAnimator valueAnimator = ValueAnimator.ofFloat(value, 
+                        -mHeaderHeight);
+                valueAnimator.setInterpolator(new LinearInterpolator());
+                valueAnimator.setDuration(HEADER_CANCEL_REFRESH_TIME);
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        float value = (float) animation.getAnimatedValue();
+                        setHeaderTopMargin((int) value);
+                        setHeaderBottomMargin(0);
+                        mHeaderView.onRefresh(percentValue * (1 - animation.getAnimatedFraction()));
+                    }
+                });
+                valueAnimator.start();
+            }
+        });
+    }
 }

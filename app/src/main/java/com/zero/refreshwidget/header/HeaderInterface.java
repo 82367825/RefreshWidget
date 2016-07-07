@@ -20,5 +20,16 @@ public interface HeaderInterface {
      * 正在刷新
      */
     void onRefreshing();
-    
+
+    /**
+     * 设置HeaderView完成显示比例
+     * @param percent
+     */
+    void setPercent(float percent);
+
+    /**
+     * 获取HeaderView完成比例
+     * @return
+     */
+    float getPercent();
 }
