@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
                         try {
-                            Thread.sleep(3000);
+                            Thread.sleep(8000);
                             mRefreshListViewWidget.refreshComplete();
                         } catch (InterruptedException e) {
                             e.printStackTrace();

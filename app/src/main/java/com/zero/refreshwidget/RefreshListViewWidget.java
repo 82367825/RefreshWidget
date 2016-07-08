@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
@@ -102,7 +101,7 @@ public class RefreshListViewWidget extends RefreshWidget{
     }
     
     /**
-     * 刷新完成, 回弹
+     * 刷新完成,回弹
      */
     public void refreshComplete() {
         headerCompleteRefreshTask();
