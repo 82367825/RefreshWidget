@@ -169,7 +169,7 @@ public class HeaderAnimView extends BaseHeader{
      */
     private void drawWave() {
         mPointF1.x = -mWidth;
-        mPointF1.y = 0.2f * mHeight;
+        mPointF1.y = 0.3f * mHeight;
         mMainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -182,7 +182,7 @@ public class HeaderAnimView extends BaseHeader{
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         mPointF1.x = (float) animation.getAnimatedValue();
-                        mPointF1.y = 0.2f * mHeight;
+                        mPointF1.y = 0.3f * mHeight;
                         mPointF2.x = mPointF1.x + mWidth * 0.5f;
                         mPointF2.y = mPointF1.y;
                         mPointF3.x = mPointF1.x + mWidth;
