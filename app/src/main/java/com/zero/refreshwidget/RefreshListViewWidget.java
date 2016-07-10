@@ -87,6 +87,7 @@ public class RefreshListViewWidget extends RefreshWidget{
                 .LayoutParams.WRAP_CONTENT);
         mHeaderView.onRefresh(0);
         addView(mHeaderView, mHeaderLayoutParams);
+        
         mContentView = new ListView(getContext());
         mContentLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
                 .LayoutParams.WRAP_CONTENT);
@@ -115,12 +116,14 @@ public class RefreshListViewWidget extends RefreshWidget{
         
     }
     
-    public void addHeaderView() {
-        
+    public void addHeaderView(BaseHeader headerView) {
+        this.mHeaderView = headerView;
+        addView(mHeaderView);
     }
     
-    public void addFooterView() {
-        
+    public void addFooterView(BaseFooter footerView) {
+        this.mFooterView = footerView;
+        addView(mFooterView);
     }
     
     public void setAdapter(BaseAdapter adapter) {
@@ -290,6 +293,12 @@ public class RefreshListViewWidget extends RefreshWidget{
     private static final long HEADER_REFRESH_TIME = 300;
     
     private static final long HEADER_COMPLETE_REFRESH_TIME = 300;
+    
+    private static final long FOOTER_CANCEL_LOAD_MORE_TIME = 300;
+    
+    private static final long FOOTER_LOAD_MORE = 300;
+    
+    private static final long FOOTER_COMPLETE_LOAD_MORE = 300;
 
     /**
      * 下拉刷新任务
@@ -316,6 +325,13 @@ public class RefreshListViewWidget extends RefreshWidget{
     }
 
     /**
+     * 上拉加载更多任务
+     */
+    private void footerLoadMoreTask() {
+        
+    }
+
+    /**
      * 下拉刷新完成任务
      */
     private void headerCompleteRefreshTask() {
@@ -337,6 +353,13 @@ public class RefreshListViewWidget extends RefreshWidget{
         });
     }
 
+    /**
+     * 上拉加载更多完成任务
+     */
+    private void footerCompleteLoadMoreTask() {
+        
+    }
+    
     /**
      * 取消下拉刷新任务
      */
@@ -362,5 +385,12 @@ public class RefreshListViewWidget extends RefreshWidget{
                 valueAnimator.start();
             }
         });
+    }
+
+    /**
+     * 取消上拉加载更多任务
+     */
+    private void footerCancelLoadMoreTask() {
+        
     }
 }
