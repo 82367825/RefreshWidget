@@ -16,7 +16,7 @@ import com.zero.refreshwidget.utils.DrawUtils;
  */
 public class HeaderTextView extends BaseHeader implements HeaderInterface{
     
-    private final static String TEXT_START_TO_REFRESH = "下拉加载更多";
+    private final static String TEXT_START_TO_REFRESH = "下拉刷新";
     
     private final static String TEXT_RELEASE_TO_REFRESH = "松手刷新";
     
@@ -44,16 +44,9 @@ public class HeaderTextView extends BaseHeader implements HeaderInterface{
         super(context, attrs, defStyleAttr);
         init();
     }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-    }
     
     private void init() {
         mTextView = new TextView(getContext());
-        RelativeLayout.LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams
-                .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         addView(mTextView);
     }
     
@@ -79,7 +72,7 @@ public class HeaderTextView extends BaseHeader implements HeaderInterface{
     }
 
     @Override
-    public void onRefreshing() {
+    public void onRefreshIng() {
         mTextView.setTextColor(TEXT_COLOR);
         mTextView.setTextSize(DrawUtils.dip2px(getContext(), TEXT_SIZE));
         setPadding(DrawUtils.dip2px(getContext(), TEXT_PADDING), DrawUtils.dip2px(getContext(), TEXT_PADDING),

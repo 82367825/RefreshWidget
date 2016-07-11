@@ -19,14 +19,20 @@ public class FooterAnimView extends BaseFooter {
     public FooterAnimView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
+    
 
     @Override
-    public void onLoadMore() {
+    public void onLoadMore(float percent) {
         
     }
 
     @Override
     public void onReleaseToLoadMore() {
 
+    }
+
+    @Override
+    public void onLoadMoreIng() {
+        
     }
 }

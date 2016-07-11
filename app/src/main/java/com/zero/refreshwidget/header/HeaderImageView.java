@@ -31,7 +31,7 @@ public class HeaderImageView extends BaseHeader {
     }
 
     @Override
-    public void onRefreshing() {
+    public void onRefreshIng() {
 
     }
 }

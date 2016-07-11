@@ -19,7 +19,7 @@ public interface HeaderInterface {
     /**
      * 正在刷新
      */
-    void onRefreshing();
+    void onRefreshIng();
 
     /**
      * 设置HeaderView完成显示比例

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.zero.refreshwidget.R;
 import com.zero.refreshwidget.RefreshListViewWidget;
 import com.zero.refreshwidget.RefreshListener;
+import com.zero.refreshwidget.header.HeaderAnimView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class MainActivity extends Activity {
         mList.add("text10");
         mList.add("text11");
         mList.add("text12");
+        mRefreshListViewWidget.addHeaderView(new HeaderAnimView(mRefreshListViewWidget.getContext()));
         mRefreshListViewWidget.setAdapter(new DemoAdapter());
         mRefreshListViewWidget.setRefreshListener(new RefreshListener() {
             @Override
@@ -58,8 +60,19 @@ public class MainActivity extends Activity {
 
             @Override
             public void onLoadMore() {
-
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(8000);
+                            mRefreshListViewWidget.loadMoreComplete();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
+            
 
             @Override
             public void onScrolling() {

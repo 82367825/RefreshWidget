@@ -159,7 +159,7 @@ public class HeaderAnimView extends BaseHeader{
     }
 
     @Override
-    public void onRefreshing() {
+    public void onRefreshIng() {
         this.mCurrentStatus = STATUS_REFRESH_ING;
         drawWave();
     }
