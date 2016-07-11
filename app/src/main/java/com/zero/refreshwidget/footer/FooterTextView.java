@@ -3,6 +3,8 @@ package com.zero.refreshwidget.footer;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.zero.refreshwidget.utils.DrawUtils;
@@ -44,7 +46,7 @@ public class FooterTextView extends BaseFooter {
                     
     private void init() {
         mTextView = new TextView(getContext());
-        addView(mTextView);
+        addView(mTextView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
 

@@ -14,7 +14,7 @@ import com.zero.refreshwidget.utils.DrawUtils;
  * @author linzewu
  * @date 16-6-29
  */
-public class HeaderTextView extends BaseHeader implements HeaderInterface{
+public class HeaderTextView extends BaseHeader {
     
     private final static String TEXT_START_TO_REFRESH = "下拉刷新";
     
@@ -47,7 +47,7 @@ public class HeaderTextView extends BaseHeader implements HeaderInterface{
     
     private void init() {
         mTextView = new TextView(getContext());
-        addView(mTextView);
+        addView(mTextView, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
     }
     
 

@@ -7,10 +7,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import com.zero.refreshwidget.footer.BaseFooter;
 import com.zero.refreshwidget.footer.FooterTextView;
@@ -26,14 +26,17 @@ public class RefreshListViewWidget extends RefreshWidget{
     
     public RefreshListViewWidget(Context context) {
         super(context);
+        init();
     }
 
     public RefreshListViewWidget(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public RefreshListViewWidget(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
     }
     
     private static final String TAG = "RefreshListViewWidget";
@@ -68,35 +71,37 @@ public class RefreshListViewWidget extends RefreshWidget{
     public void setRefreshListener(RefreshListener refreshListener) {
         this.mRefreshListener = refreshListener;
     }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        init();
-    }
-
+    
     private void init() {
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         
         mHeaderView = new HeaderTextView(getContext());
-        mHeaderLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
+        mHeaderLayoutParams = new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout
                 .LayoutParams.WRAP_CONTENT);
         mHeaderView.onRefresh(0);
         addView(mHeaderView, mHeaderLayoutParams);
         
+        
         mContentView = new ListView(getContext());
-        mContentLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
+        mContentLayoutParams = new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout
                 .LayoutParams.WRAP_CONTENT);
         addView(mContentView, mContentLayoutParams);
         
+        
         mFooterView = new FooterTextView(getContext());
-        mFooterLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
+        mFooterLayoutParams = new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout
                 .LayoutParams.WRAP_CONTENT);
+        mFooterView.onLoadMore(0);
         addView(mFooterView, mFooterLayoutParams);
-
+        
         mCurrentStatus = STATUS_NORMAL;
     }
-    
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+    }
+
     /**
      * 刷新完成,回弹
      */
@@ -118,6 +123,7 @@ public class RefreshListViewWidget extends RefreshWidget{
         this.mHeaderView = headerView;
         hasCustomHeaderFooterViewInit = false;
         addView(mHeaderView, 0);
+        mHeaderView.onRefresh(0);
     }
     
     public void addFooterView(BaseFooter footerView) {
@@ -125,6 +131,8 @@ public class RefreshListViewWidget extends RefreshWidget{
         this.mFooterView = footerView;
         hasCustomHeaderFooterViewInit = false;
         addView(mFooterView, 2);
+        mFooterView.onLoadMore(0);
+        
     }
     
     public void setAdapter(BaseAdapter adapter) {
@@ -165,14 +173,21 @@ public class RefreshListViewWidget extends RefreshWidget{
                 mHeaderLayoutParams.setMargins(0, -mHeaderHeight, 0, 0);
                 mHeaderView.setLayoutParams(mHeaderLayoutParams);
             }
+            mFooterView.measure(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             mFooterWidth = mFooterView.getMeasuredWidth();
             mFooterHeight = mFooterView.getMeasuredHeight();
             if( mFooterHeight > 0 ){
-                mFooterLayoutParams.setMargins(0, 0, 0, -mFooterHeight);
+                mFooterLayoutParams.setMargins(0, -mFooterHeight, 0, 0);
                 mFooterView.setLayoutParams(mFooterLayoutParams);
+
+                mContentLayoutParams.setMargins(0, 0, 0, mFooterHeight);
+                mContentView.setLayoutParams(mContentLayoutParams);
             }
             hasDefaultHeaderFooterViewInit = true;
             hasCustomHeaderFooterViewInit = true;
+            
+            Log.i(TAG, "HeaderView Height:" + mHeaderHeight);
+            Log.i(TAG, "FooterView Height:" + mFooterHeight);
         }
     }
     
@@ -233,13 +248,10 @@ public class RefreshListViewWidget extends RefreshWidget{
                     if (mDownY - mMoveY > mFooterHeight * mFooterPullProportion) {
                         mCurrentStatus = STATUS_RELEASE_TO_LOAD_MORE;
                         mFooterView.onReleaseToLoadMore();
-                        setFooterBottomMargin(0);
-                        setFooterTopMargin((int) (mDownY - mMoveY - mFooterHeight * mFooterPullProportion));
+                        setFooterTopMargin(0);
                     } else {
                         mCurrentStatus = STATUS_LOAD_MORE;
                         mFooterView.onLoadMore((mDownY - mMoveY) / ((float)mFooterHeight * 
-                                mFooterPullProportion));
-                        setFooterBottomMargin(-mFooterHeight + (int) ((mDownY - mMoveY) / 
                                 mFooterPullProportion));
                         setFooterTopMargin(0);
                     }
@@ -288,8 +300,6 @@ public class RefreshListViewWidget extends RefreshWidget{
     }
 
     /**
-     * 设置footerView的上边距，这里边距为正值
-     * 为了保证上拉过程能够继续往上拉
      * @param margin
      */
     private void setFooterTopMargin(int margin) {
@@ -298,14 +308,13 @@ public class RefreshListViewWidget extends RefreshWidget{
     }
     
     /**
-     * 设置footerView的下边距，这里边距为负值
      * @param margin
      */
     private void setFooterBottomMargin(int margin) {
         mFooterLayoutParams.bottomMargin = margin;
         mFooterView.setLayoutParams(mFooterLayoutParams);
     }
-
+    
     @Override
     public void setRefreshEnabled(boolean enabled) {
         this.mRefreshEnabled = enabled;
