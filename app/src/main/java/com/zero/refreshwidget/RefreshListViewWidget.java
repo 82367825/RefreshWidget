@@ -3,7 +3,6 @@ package com.zero.refreshwidget;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Handler;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -178,8 +177,8 @@ public class RefreshListViewWidget extends RefreshWidget{
             mFooterWidth = mFooterView.getMeasuredWidth();
             mFooterHeight = mFooterView.getMeasuredHeight();
             if( mFooterHeight > 0 ){
-//                mFooterLayoutParams.setMargins(0, -mFooterHeight, 0, 0);
-//                mFooterView.setLayoutParams(mFooterLayoutParams);
+                mFooterLayoutParams.setMargins(0, -mFooterHeight, 0, 0);
+                mFooterView.setLayoutParams(mFooterLayoutParams);
 //
 //                mContentLayoutParams.setMargins(0, 0, 0, mFooterHeight);
 //                mContentView.setLayoutParams(mContentLayoutParams);
@@ -311,16 +310,6 @@ public class RefreshListViewWidget extends RefreshWidget{
         mHeaderView.setLayoutParams(mHeaderLayoutParams);
     }
     
-    private void setContentViewTopMargin(int margin) {
-        mContentLayoutParams.topMargin = margin;
-        mContentView.setLayoutParams(mContentLayoutParams);
-    }
-    
-    private void setContentViewBottomMargin(int margin) {
-        mContentLayoutParams.bottomMargin = margin;
-        mContentView.setLayoutParams(mContentLayoutParams);
-    }
-
     /**
      * @param margin
      */
@@ -335,6 +324,16 @@ public class RefreshListViewWidget extends RefreshWidget{
     private void setFooterBottomMargin(int margin) {
         mFooterLayoutParams.bottomMargin = margin;
         mFooterView.setLayoutParams(mFooterLayoutParams);
+    }
+    
+    private void setContentViewTopMargin(int margin) {
+        mContentLayoutParams.topMargin = margin;
+        mContentView.setLayoutParams(mContentLayoutParams);
+    }
+    
+    private void setContentViewBottomMargin(int margin) {
+        mContentLayoutParams.bottomMargin = margin;
+        mContentView.setLayoutParams(mContentLayoutParams);
     }
     
     @Override
