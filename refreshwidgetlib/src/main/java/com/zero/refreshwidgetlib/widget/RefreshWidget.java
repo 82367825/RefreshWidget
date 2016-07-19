@@ -1,4 +1,4 @@
-package com.zero.refreshwidget;
+package com.zero.refreshwidgetlib.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
  * @author linzewu
  * @date 16-6-29
  */
-public abstract class RefreshWidget extends LinearLayout implements RefreshInterface{
+public abstract class RefreshWidget extends LinearLayout implements RefreshInterface {
     
     protected final static int STATUS_NORMAL = 0x01;
     

@@ -1,9 +1,8 @@
-package com.zero.refreshwidget;
+package com.zero.refreshwidgetlib.widget;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Handler;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -12,19 +11,19 @@ import android.view.animation.LinearInterpolator;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import com.zero.refreshwidget.footer.BaseFooter;
-import com.zero.refreshwidget.footer.FooterTextView;
-import com.zero.refreshwidget.header.BaseHeader;
-import com.zero.refreshwidget.header.HeaderTextView;
+
+import com.zero.refreshwidgetlib.header.BaseHeader;
+import com.zero.refreshwidgetlib.header.HeaderTextView;
+import com.zero.refreshwidgetlib.footer.BaseFooter;
+import com.zero.refreshwidgetlib.footer.FooterTextView;
 
 /**
  * Refresh ListView
  * @author linzewu
  * @date 16-6-29
  */
-public class RefreshListViewWidget extends RefreshWidget{
+public class RefreshListViewWidget extends RefreshWidget {
     
     public RefreshListViewWidget(Context context) {
         super(context);
@@ -78,20 +77,18 @@ public class RefreshListViewWidget extends RefreshWidget{
         mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         
         mHeaderView = new HeaderTextView(getContext());
-        mHeaderLayoutParams = new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout
-                .LayoutParams.WRAP_CONTENT);
+        mHeaderLayoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         mHeaderView.onRefresh(0);
         addView(mHeaderView, mHeaderLayoutParams);
         
         
         mContentView = new ListView(getContext());
-        mContentLayoutParams = new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        mContentLayoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         addView(mContentView, mContentLayoutParams);
         
         
         mFooterView = new FooterTextView(getContext());
-        mFooterLayoutParams = new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout
-                .LayoutParams.WRAP_CONTENT);
+        mFooterLayoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         mFooterView.onLoadMore(0);
         addView(mFooterView, mFooterLayoutParams);
         
@@ -178,11 +175,7 @@ public class RefreshListViewWidget extends RefreshWidget{
             mFooterWidth = mFooterView.getMeasuredWidth();
             mFooterHeight = mFooterView.getMeasuredHeight();
             if( mFooterHeight > 0 ){
-//                mFooterLayoutParams.setMargins(0, -mFooterHeight, 0, 0);
-//                mFooterView.setLayoutParams(mFooterLayoutParams);
-//
-//                mContentLayoutParams.setMargins(0, 0, 0, mFooterHeight);
-//                mContentView.setLayoutParams(mContentLayoutParams);
+                
             }
             hasDefaultHeaderFooterViewInit = true;
             hasCustomHeaderFooterViewInit = true;
@@ -254,16 +247,15 @@ public class RefreshListViewWidget extends RefreshWidget{
                         mCurrentStatus = STATUS_RELEASE_TO_LOAD_MORE;
                         mFooterView.onReleaseToLoadMore();
 
-                        setContentViewBottomMargin(mFooterHeight);
-//                        reachFooter();
-                        
+                        setContentViewBottomMargin((int) ((mDownY - mMoveY) / mFooterPullProportion));
+                        setFooterTopMargin(-mFooterHeight);
                     } else {
                         mCurrentStatus = STATUS_LOAD_MORE;
                         mFooterView.onLoadMore((mDownY - mMoveY) / ((float)mFooterHeight * 
                                 mFooterPullProportion));
                         
                         setContentViewBottomMargin((int) ((mDownY - mMoveY) / mFooterPullProportion));
-//                        reachFooter();
+                        setFooterTopMargin((int)((-mFooterHeight) * mFooterView.getPercent()));
                     }
                 }
                 break;
@@ -404,18 +396,18 @@ public class RefreshListViewWidget extends RefreshWidget{
      * 上拉加载更多任务
      */
     private void footerLoadMoreTask() {
-        final int value = mFooterLayoutParams.topMargin;
+        final int value = mContentLayoutParams.bottomMargin;
         mMainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                ValueAnimator valueAnimator = ValueAnimator.ofFloat(value, 0);
+                ValueAnimator valueAnimator = ValueAnimator.ofFloat(value, mFooterHeight);
                 valueAnimator.setInterpolator(new LinearInterpolator());
                 valueAnimator.setDuration(FOOTER_LOAD_MORE_TIME);
                 valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         float value = (float) animation.getAnimatedValue();
-                        setFooterTopMargin((int) value);
+                        setContentViewBottomMargin((int) value);
                     }
                 });
                 valueAnimator.start();
@@ -452,13 +444,14 @@ public class RefreshListViewWidget extends RefreshWidget{
         mMainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, -mFooterHeight);
+                ValueAnimator valueAnimator = ValueAnimator.ofFloat(mFooterHeight, 0);
                 valueAnimator.setDuration(FOOTER_COMPLETE_LOAD_MORE_TIME);
                 valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         float value = (float) animation.getAnimatedValue();
-                        setFooterBottomMargin((int) value);
+                        setContentViewBottomMargin((int) value);
+                        setFooterTopMargin(0);
                     }
                 });
                 valueAnimator.setInterpolator(new LinearInterpolator());
@@ -498,18 +491,18 @@ public class RefreshListViewWidget extends RefreshWidget{
      * 取消上拉加载更多任务
      */
     private void footerCancelLoadMoreTask() {
-        final int value = mFooterLayoutParams.bottomMargin;
+        final int value = mContentLayoutParams.bottomMargin;
         final float percentValue = mFooterView.getPercent();
         mMainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
-                ValueAnimator valueAnimator = ValueAnimator.ofFloat(value, -mFooterHeight);
+                ValueAnimator valueAnimator = ValueAnimator.ofFloat(value, 0);
                 valueAnimator.setDuration(FOOTER_CANCEL_LOAD_MORE_TIME);
                 valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
                         float value = (float) animation.getAnimatedValue();
-                        setFooterBottomMargin((int) value);
+                        setContentViewBottomMargin((int) value);
                         setFooterTopMargin(0);
                         mFooterView.onLoadMore(percentValue * (1 - animation.getAnimatedFraction()));
                     }

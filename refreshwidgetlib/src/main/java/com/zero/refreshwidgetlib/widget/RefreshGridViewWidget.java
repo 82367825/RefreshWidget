@@ -1,4 +1,4 @@
-package com.zero.refreshwidget;
+package com.zero.refreshwidgetlib.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,7 +8,7 @@ import android.util.AttributeSet;
  * @author linzewu
  * @date 16-6-29
  */
-public class RefreshGridViewWidget extends RefreshWidget{
+public class RefreshGridViewWidget extends RefreshWidget {
     public RefreshGridViewWidget(Context context) {
         super(context);
     }

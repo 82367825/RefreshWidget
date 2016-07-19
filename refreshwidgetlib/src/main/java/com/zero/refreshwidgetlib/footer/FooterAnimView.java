@@ -1,4 +1,4 @@
-package com.zero.refreshwidget.footer;
+package com.zero.refreshwidgetlib.footer;
 
 import android.content.Context;
 import android.util.AttributeSet;

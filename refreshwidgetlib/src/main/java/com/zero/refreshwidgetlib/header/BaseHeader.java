@@ -1,4 +1,4 @@
-package com.zero.refreshwidget.header;
+package com.zero.refreshwidgetlib.header;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -33,5 +33,20 @@ public abstract class BaseHeader extends RelativeLayout implements HeaderInterfa
 
     public BaseHeader(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    public void onRefresh(float percent) {
+        this.mPercent = percent;
+    }
+
+    @Override
+    public void onRefreshIng() {
+        
+    }
+
+    @Override
+    public void onReleaseToRefresh() {
+        
     }
 }

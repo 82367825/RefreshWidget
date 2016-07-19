@@ -1,4 +1,4 @@
-package com.zero.refreshwidget.utils;
+package com.zero.refreshwidgetlib.utils;
 
 import android.content.Context;
 

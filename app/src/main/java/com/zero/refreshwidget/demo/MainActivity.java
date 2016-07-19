@@ -8,9 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import com.zero.refreshwidget.R;
-import com.zero.refreshwidget.RefreshListViewWidget;
-import com.zero.refreshwidget.RefreshListener;
-import com.zero.refreshwidget.header.HeaderAnimView;
+import com.zero.refreshwidgetlib.widget.RefreshListViewWidget;
+import com.zero.refreshwidgetlib.widget.RefreshListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,14 +31,14 @@ public class MainActivity extends Activity {
         mList.add("text2");
         mList.add("text3");
         mList.add("text4");
-        mList.add("text5");
-        mList.add("text6");
-        mList.add("text7");
-        mList.add("text8");
-        mList.add("text9");
-        mList.add("text10");
-        mList.add("text11");
-        mList.add("text12");
+//        mList.add("text5");
+//        mList.add("text6");
+//        mList.add("text7");
+//        mList.add("text8");
+//        mList.add("text9");
+//        mList.add("text10");
+//        mList.add("text11");
+//        mList.add("text12");
 //        mRefreshListViewWidget.addHeaderView(new HeaderAnimView(mRefreshListViewWidget.getContext()));
         mRefreshListViewWidget.setAdapter(new DemoAdapter());
         mRefreshListViewWidget.setRefreshListener(new RefreshListener() {
@@ -49,7 +48,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
                         try {
-                            Thread.sleep(8000);
+                            Thread.sleep(4000);
                             mRefreshListViewWidget.refreshComplete();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -64,7 +63,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
                         try {
-                            Thread.sleep(8000);
+                            Thread.sleep(4000);
                             mRefreshListViewWidget.loadMoreComplete();
                         } catch (InterruptedException e) {
                             e.printStackTrace();

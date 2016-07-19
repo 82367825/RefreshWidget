@@ -1,25 +1,24 @@
-package com.zero.refreshwidget.header;
+package com.zero.refreshwidgetlib.footer;
 
 /**
  * @author linzewu
- * @date 16-6-29
+ * @date 16-7-5
  */
-public interface HeaderInterface {
+public interface FooterInterface {
     /**
-     * 正在下拉刷新
-     * @param percent 下拉完成比例
+     * 正在加载更多
      */
-    void onRefresh(float percent);
+    void onLoadMore(float percent);
 
     /**
-     * 松手刷新
+     * 松手加载更多
      */
-    void onReleaseToRefresh();
+    void onReleaseToLoadMore();
 
     /**
-     * 正在刷新
+     * 
      */
-    void onRefreshIng();
+    void onLoadMoreIng();
 
     /**
      * 设置HeaderView完成显示比例

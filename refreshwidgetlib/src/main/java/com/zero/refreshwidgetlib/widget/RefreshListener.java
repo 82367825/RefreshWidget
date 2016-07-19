@@ -1,4 +1,4 @@
-package com.zero.refreshwidget;
+package com.zero.refreshwidgetlib.widget;
 
 /**
  * @author linzewu

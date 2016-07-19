@@ -1,4 +1,4 @@
-package com.zero.refreshwidget.footer;
+package com.zero.refreshwidgetlib.footer;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -32,5 +32,20 @@ public abstract class BaseFooter extends RelativeLayout implements FooterInterfa
 
     public BaseFooter(Context context) {
         super(context);
+    }
+
+    @Override
+    public void onLoadMore(float percent) {
+        this.mPercent = percent;
+    }
+
+    @Override
+    public void onLoadMoreIng() {
+        
+    }
+
+    @Override
+    public void onReleaseToLoadMore() {
+        
     }
 }

@@ -1,4 +1,4 @@
-package com.zero.refreshwidget.header;
+package com.zero.refreshwidgetlib.header;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -8,12 +8,11 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
-import com.zero.refreshwidget.utils.DrawUtils;
+import com.zero.refreshwidgetlib.utils.DrawUtils;
 
 /**
  * Anim HeaderView
@@ -144,6 +143,7 @@ public class HeaderAnimView extends BaseHeader{
 
     @Override
     public void onRefresh(float percent) {
+        super.onRefresh(percent);
         this.mCurrentStatus = STATUS_START_TO_REFRESH;
         this.mPercent = percent;
         invalidate();
@@ -151,6 +151,7 @@ public class HeaderAnimView extends BaseHeader{
 
     @Override
     public void onReleaseToRefresh() {
+        super.onReleaseToRefresh();
         this.mCurrentStatus = STATUS_RELEASE_TO_REFRESH;
         this.mPercent = 1;
         invalidate();
@@ -158,6 +159,7 @@ public class HeaderAnimView extends BaseHeader{
 
     @Override
     public void onRefreshIng() {
+        super.onRefreshIng();
         this.mCurrentStatus = STATUS_REFRESH_ING;
         drawWave();
     }
