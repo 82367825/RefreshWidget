@@ -33,9 +33,7 @@ public class HeaderAnimView extends BaseHeader{
     
     private static final float MAX_HEIGHT = 100;
     private static final int DEFAULT_COLOR = 0x4400AAFF;
-    private static final boolean DEFAULT_TEXT_SHOW = true;
     
-    private boolean mIsTextViewShow = DEFAULT_TEXT_SHOW;
     private int mColor = DEFAULT_COLOR;
     
     private Paint mPaint;
