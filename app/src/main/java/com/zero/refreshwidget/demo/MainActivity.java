@@ -8,9 +8,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import com.zero.refreshwidget.R;
-import com.zero.refreshwidget.RefreshListViewWidget;
-import com.zero.refreshwidget.RefreshListener;
-import com.zero.refreshwidget.header.HeaderAnimView;
+import com.zero.refreshwidgetlib.footer.FooterAnimView;
+import com.zero.refreshwidgetlib.header.HeaderAnimView;
+import com.zero.refreshwidgetlib.widget.RefreshListViewWidget;
+import com.zero.refreshwidgetlib.widget.RefreshListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRefreshListViewWidget = (RefreshListViewWidget) findViewById(R.id.refresh_list);
+        mRefreshListViewWidget.addHeaderView(new HeaderAnimView(MainActivity.this));
+        mRefreshListViewWidget.addFooterView(new FooterAnimView(MainActivity.this));
         mList.add("text1");
         mList.add("text2");
         mList.add("text3");
@@ -40,7 +43,6 @@ public class MainActivity extends Activity {
         mList.add("text10");
         mList.add("text11");
         mList.add("text12");
-//        mRefreshListViewWidget.addHeaderView(new HeaderAnimView(mRefreshListViewWidget.getContext()));
         mRefreshListViewWidget.setAdapter(new DemoAdapter());
         mRefreshListViewWidget.setRefreshListener(new RefreshListener() {
             @Override
@@ -49,8 +51,8 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
                         try {
-                            Thread.sleep(8000);
-                            mRefreshListViewWidget.refreshComplete();
+                            Thread.sleep(4000);
+                            mRefreshListViewWidget.completeRefresh();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -64,19 +66,13 @@ public class MainActivity extends Activity {
                     @Override
                     public void run() {
                         try {
-                            Thread.sleep(8000);
-                            mRefreshListViewWidget.loadMoreComplete();
+                            Thread.sleep(4000);
+                            mRefreshListViewWidget.completeLoadMore();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
                 }).start();
-            }
-            
-
-            @Override
-            public void onScrolling() {
-
             }
         });
     }
