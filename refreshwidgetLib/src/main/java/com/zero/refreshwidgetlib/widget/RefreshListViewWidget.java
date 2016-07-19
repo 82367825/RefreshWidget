@@ -2,7 +2,9 @@ package com.zero.refreshwidgetlib.widget;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -10,7 +12,7 @@ import android.view.ViewConfiguration;
 import android.view.animation.LinearInterpolator;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.zero.refreshwidgetlib.header.BaseHeader;
@@ -23,7 +25,7 @@ import com.zero.refreshwidgetlib.footer.FooterTextView;
  * @author linzewu
  * @date 16-6-29
  */
-public class RefreshListViewWidget extends RefreshWidget {
+public class RefreshListViewWidget extends RefreshWidget implements RefreshListViewInterface{
     
     public RefreshListViewWidget(Context context) {
         super(context);
@@ -48,12 +50,8 @@ public class RefreshListViewWidget extends RefreshWidget {
     private LayoutParams mHeaderLayoutParams;
     private LayoutParams mFooterLayoutParams;
     private LayoutParams mContentLayoutParams;
-    private int mWidth;
-    private int mHeight;
-    private int mHeaderWidth;
     private int mHeaderHeight;
     private float mHeaderPullProportion = 3f;
-    private int mFooterWidth;
     private int mFooterHeight;
     private float mFooterPullProportion = 3f;
 
@@ -132,20 +130,53 @@ public class RefreshListViewWidget extends RefreshWidget {
         mFooterView.onLoadMore(0);
     }
     
-    public void setAdapter(BaseAdapter adapter) {
-        mContentView.setAdapter(adapter);
-    }
-    
+    @Override
     public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
         mContentView.setOnItemClickListener(onItemClickListener);
     }
-    
+
+    @Override
+    public void setAdapter(ListAdapter adapter) {
+        mContentView.setAdapter(adapter);
+    }
+
+    @Override
     public void setDividerHeight(int dividerHeight) {
         mContentView.setDividerHeight(dividerHeight);
     }
-    
+
+    @Override
+    public void setDivider(@Nullable Drawable divider) {
+        mContentView.setDivider(divider);
+    }
+
+    @Override
+    public Drawable getDivider() {
+        return mContentView.getDivider();
+    }
+
+    @Override
+    public void smoothScrollToPosition(int position) {
+        mContentView.smoothScrollToPosition(position);
+    }
+
+    @Override
+    public void smoothScrollByOffset(int offset) {
+        mContentView.smoothScrollByOffset(offset);
+    }
+
     public void setSelection(int selection) {
         mContentView.setSelection(selection);
+    }
+
+    @Override
+    public int getSelectedItemPosition() {
+        return mContentView.getSelectedItemPosition();
+    }
+
+    @Override
+    public int getDividerHeight() {
+        return mContentView.getDividerHeight();
     }
 
     /**
@@ -162,9 +193,6 @@ public class RefreshListViewWidget extends RefreshWidget {
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
         super.onSizeChanged(w, h, oldW, oldH);
         if(!hasDefaultHeaderFooterViewInit || !hasCustomHeaderFooterViewInit) {
-            mWidth = w;
-            mHeight = h;
-            mHeaderWidth = mHeaderView.getMeasuredWidth();
             mHeaderHeight = mHeaderView.getMeasuredHeight();
             if( mHeaderHeight > 0 ){
                 mHeaderLayoutParams.setMargins(0, -mHeaderHeight, 0, 0);
@@ -172,10 +200,10 @@ public class RefreshListViewWidget extends RefreshWidget {
             }
             
             mFooterView.measure(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-            mFooterWidth = mFooterView.getMeasuredWidth();
             mFooterHeight = mFooterView.getMeasuredHeight();
             if( mFooterHeight > 0 ){
-                
+                mFooterLayoutParams.setMargins(0, 0, 0, 0);
+                mFooterView.setLayoutParams(mContentLayoutParams);
             }
             hasDefaultHeaderFooterViewInit = true;
             hasCustomHeaderFooterViewInit = true;
