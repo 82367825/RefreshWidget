@@ -22,16 +22,16 @@ public class HeaderImageView extends BaseHeader {
 
     @Override
     public void onRefresh(float percent) {
-        
+        super.onRefresh(percent);
     }
 
     @Override
     public void onReleaseToRefresh() {
-
+        super.onReleaseToRefresh();
     }
 
     @Override
     public void onRefreshIng() {
-
+        super.onRefreshIng();
     }
 }

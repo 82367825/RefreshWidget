@@ -10,7 +10,7 @@ import android.widget.RelativeLayout;
  */
 public abstract class BaseFooter extends RelativeLayout implements FooterInterface {
     
-    private float mPercent;
+    protected float mPercent;
 
     @Override
     public void setPercent(float percent) {

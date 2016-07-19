@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import com.zero.refreshwidget.R;
+import com.zero.refreshwidgetlib.footer.FooterAnimView;
+import com.zero.refreshwidgetlib.header.HeaderAnimView;
 import com.zero.refreshwidgetlib.widget.RefreshListViewWidget;
 import com.zero.refreshwidgetlib.widget.RefreshListener;
 
@@ -27,19 +29,20 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRefreshListViewWidget = (RefreshListViewWidget) findViewById(R.id.refresh_list);
+        mRefreshListViewWidget.addHeaderView(new HeaderAnimView(MainActivity.this));
+        mRefreshListViewWidget.addFooterView(new FooterAnimView(MainActivity.this));
         mList.add("text1");
         mList.add("text2");
         mList.add("text3");
         mList.add("text4");
-//        mList.add("text5");
-//        mList.add("text6");
-//        mList.add("text7");
-//        mList.add("text8");
-//        mList.add("text9");
-//        mList.add("text10");
-//        mList.add("text11");
-//        mList.add("text12");
-//        mRefreshListViewWidget.addHeaderView(new HeaderAnimView(mRefreshListViewWidget.getContext()));
+        mList.add("text5");
+        mList.add("text6");
+        mList.add("text7");
+        mList.add("text8");
+        mList.add("text9");
+        mList.add("text10");
+        mList.add("text11");
+        mList.add("text12");
         mRefreshListViewWidget.setAdapter(new DemoAdapter());
         mRefreshListViewWidget.setRefreshListener(new RefreshListener() {
             @Override

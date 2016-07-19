@@ -24,25 +24,25 @@ public abstract class BaseRefreshWidget extends LinearLayout implements BaseRefr
     
     private static final String TAG = "BaseRefreshWidget";
     
-    protected final static int STATUS_NORMAL = 0x01;
+    private final static int STATUS_NORMAL = 0x01;
     
-    protected final static int STATUS_REFRESH = 0x02;
+    private final static int STATUS_REFRESH = 0x02;
     
-    protected final static int STATUS_RELEASE_TO_REFRESH = 0x03;
+    private final static int STATUS_RELEASE_TO_REFRESH = 0x03;
     
-    protected final static int STATUS_REFRESH_ING = 0x04;
+    private final static int STATUS_REFRESH_ING = 0x04;
     
-    protected final static int STATUS_LOAD_MORE = 0x05;
+    private final static int STATUS_LOAD_MORE = 0x05;
     
-    protected final static int STATUS_RELEASE_TO_LOAD_MORE = 0x06;
+    private final static int STATUS_RELEASE_TO_LOAD_MORE = 0x06;
     
-    protected final static int STATUS_LOAD_MORE_ING = 0x07;
+    private final static int STATUS_LOAD_MORE_ING = 0x07;
     
-    protected int mCurrentStatus;
+    private int mCurrentStatus;
     
-    protected boolean mRefreshEnabled = true;
+    private boolean mRefreshEnabled = true;
     
-    protected boolean mLoadMoreEnabled = true;
+    private boolean mLoadMoreEnabled = true;
     
     protected BaseHeader mHeaderView;
     protected BaseFooter mFooterView;
@@ -445,7 +445,7 @@ public abstract class BaseRefreshWidget extends LinearLayout implements BaseRefr
                     public void onAnimationUpdate(ValueAnimator animation) {
                         float value = (float) animation.getAnimatedValue();
                         setContentViewBottomMargin((int) value);
-                        setFooterTopMargin(0);
+                        setFooterTopMargin((int) ((1 - animation.getAnimatedFraction()) * (-mFooterHeight)));
                     }
                 });
                 valueAnimator.setInterpolator(new LinearInterpolator());
@@ -497,8 +497,8 @@ public abstract class BaseRefreshWidget extends LinearLayout implements BaseRefr
                     public void onAnimationUpdate(ValueAnimator animation) {
                         float value = (float) animation.getAnimatedValue();
                         setContentViewBottomMargin((int) value);
-                        setFooterTopMargin(0);
                         mFooterView.onLoadMore(percentValue * (1 - animation.getAnimatedFraction()));
+                        setFooterTopMargin((int) (mFooterView.getPercent() * (-mFooterHeight)));
                     }
                 });
                 valueAnimator.start();
