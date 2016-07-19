@@ -1,5 +1,7 @@
 package com.zero.refreshwidgetlib.widget.scrollview;
 
+import android.view.View;
+
 import com.zero.refreshwidgetlib.footer.BaseFooter;
 import com.zero.refreshwidgetlib.header.BaseHeader;
 
@@ -7,7 +9,7 @@ import com.zero.refreshwidgetlib.header.BaseHeader;
  * @author linzewu
  * @date 16-7-19
  */
-public class RefreshScrollViewInterface {
+public interface RefreshScrollViewInterface {
     /**
      * 设置下拉刷新功能是否可用
      * @param enabled
@@ -32,6 +34,25 @@ public class RefreshScrollViewInterface {
      */
     void addFooterView(BaseFooter baseFooter);
 
+    /**
+     * 添加视图
+     * @param view
+     */
+    void addView(View view);
+
+    /**
+     * 移除视图
+     * @param view
+     */
+    void removeView(View view);
+
+    /**
+     * 添加视图
+     * @param view
+     * @param position
+     */
+    void addView(View view, int position);
+    
     /**
      * 下拉刷新完成
      */
