@@ -14,9 +14,4 @@ public interface RefreshListener {
      * calling when loading more data
      */
     void onLoadMore();
-
-    /**
-     * calling when the content view is scrolling
-     */
-    void onScrolling();
 }

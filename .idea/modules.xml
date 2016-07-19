@@ -3,9 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/RefreshWidget.iml" filepath="$PROJECT_DIR$/RefreshWidget.iml" />
-      <module fileurl="file://$PROJECT_DIR$/RefreshWidget.iml" filepath="$PROJECT_DIR$/RefreshWidget.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/refreshwidgetLib/refreshwidgetLib.iml" filepath="$PROJECT_DIR$/refreshwidgetLib/refreshwidgetLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/refreshwidgetLib/refreshwidgetlib.iml" filepath="$PROJECT_DIR$/refreshwidgetLib/refreshwidgetlib.iml" />
     </modules>
   </component>

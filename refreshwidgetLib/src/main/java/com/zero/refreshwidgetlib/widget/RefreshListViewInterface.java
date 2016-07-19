@@ -2,6 +2,7 @@ package com.zero.refreshwidgetlib.widget;
 
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.WrapperListAdapter;
@@ -32,6 +33,13 @@ public interface RefreshListViewInterface {
      *        item in that data set.
      */
     void setAdapter(ListAdapter adapter);
+
+    /**
+     * Set the listener that will receive notifications every time the list scrolls.
+     *
+     * @param l the scroll listener
+     */
+    void setOnScrollListener(AbsListView.OnScrollListener l);
 
     /**
      * Sets the currently selected item. If in touch mode, the item will not be selected

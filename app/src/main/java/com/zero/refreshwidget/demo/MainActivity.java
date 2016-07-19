@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
                     public void run() {
                         try {
                             Thread.sleep(4000);
-                            mRefreshListViewWidget.refreshComplete();
+                            mRefreshListViewWidget.completeRefresh();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -64,18 +64,12 @@ public class MainActivity extends Activity {
                     public void run() {
                         try {
                             Thread.sleep(4000);
-                            mRefreshListViewWidget.loadMoreComplete();
+                            mRefreshListViewWidget.completeLoadMore();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
                 }).start();
-            }
-            
-
-            @Override
-            public void onScrolling() {
-
             }
         });
     }
