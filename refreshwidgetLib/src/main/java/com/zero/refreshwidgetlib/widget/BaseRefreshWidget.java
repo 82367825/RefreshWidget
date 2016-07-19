@@ -276,6 +276,7 @@ public abstract class BaseRefreshWidget extends LinearLayout implements BaseRefr
                     mCurrentStatus = STATUS_LOAD_MORE_ING;
                     mFooterView.onLoadMoreIng();
                     footerLoadMoreTask();
+                    if (mRefreshListener != null) mRefreshListener.onLoadMore();
                 } else if (mCurrentStatus == STATUS_REFRESH){
                     mCurrentStatus = STATUS_NORMAL;
                     headerCancelRefreshTask();
