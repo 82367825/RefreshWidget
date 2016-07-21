@@ -3,5 +3,10 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+    <com.zero.refreshwidgetlib.widget.RefreshScrollViewWidget 
+        android:id="@+id/refresh_scrollview" 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </com.zero.refreshwidgetlib.widget.RefreshScrollViewWidget>
 
 </LinearLayout>

@@ -217,7 +217,7 @@ public abstract class BaseRefreshWidget extends LinearLayout implements BaseRefr
                     mCurrentStatus = STATUS_LOAD_MORE;
                     mFooterView.onLoadMore(0);
                     
-                    /* 加上这一句，可以使得ListView在上拉的过程中保持滑到最底部的状态 */
+                    /* 加上这一句，可以使得ContentView在上拉的过程中保持滑到最底部的状态 */
                     makeContentViewToFooter();
                     return true;
                 }
@@ -284,7 +284,7 @@ public abstract class BaseRefreshWidget extends LinearLayout implements BaseRefr
                     mCurrentStatus = STATUS_NORMAL;
                     footerCancelLoadMoreTask();
                 }
-                /* 还原ListView状态 */
+                /* 还原ContentView状态 */
                 makeContentViewRestore();
                 break;
         }
@@ -322,13 +322,13 @@ public abstract class BaseRefreshWidget extends LinearLayout implements BaseRefr
     }
     
     /**
-     * 是否滑到了ListView的顶部
+     * 是否滑到了顶部
      * @return
      */
     protected abstract boolean isReachHeader();
 
     /**
-     * 是否滑到了ListView的底部
+     * 是否滑到了底部
      * @return
      */
     protected abstract boolean isReachFooter();
