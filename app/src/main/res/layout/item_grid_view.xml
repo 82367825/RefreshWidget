@@ -3,9 +3,11 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <com.zero.refreshwidgetlib.widget.RefreshListViewWidget
-        android:id="@+id/refresh_list"
+
+    <TextView
+        android:id="@+id/textview"
+        android:padding="30dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </com.zero.refreshwidgetlib.widget.RefreshListViewWidget>
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>

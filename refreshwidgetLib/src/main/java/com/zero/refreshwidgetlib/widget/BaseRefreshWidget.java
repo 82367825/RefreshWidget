@@ -264,6 +264,8 @@ public abstract class BaseRefreshWidget extends LinearLayout implements BaseRefr
                         setContentViewBottomMargin((int) ((mDownY - mMoveY) / mFooterPullProportion));
                         setFooterTopMargin((int)((-mFooterHeight) * mFooterView.getPercent()));
                     }
+                    /* 加上这一句，可以使得ContentView在上拉的过程中保持滑到最底部的状态 */
+                    makeContentViewToFooter();
                 }
                 break;
             case MotionEvent.ACTION_UP:

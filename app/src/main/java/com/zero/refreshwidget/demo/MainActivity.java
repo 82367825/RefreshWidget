@@ -1,6 +1,7 @@
 package com.zero.refreshwidget.demo;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,91 +22,28 @@ import java.util.List;
  * @date 16-6-29
  */
 public class MainActivity extends Activity {
-    
-    private RefreshListViewWidget mRefreshListViewWidget;
-    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRefreshListViewWidget = (RefreshListViewWidget) findViewById(R.id.refresh_list);
-        mRefreshListViewWidget.addHeaderView(new HeaderAnimView(MainActivity.this));
-        mRefreshListViewWidget.addFooterView(new FooterAnimView(MainActivity.this));
-        mList.add("text1");
-        mList.add("text2");
-        mList.add("text3");
-        mList.add("text4");
-        mList.add("text5");
-        mList.add("text6");
-        mList.add("text7");
-        mList.add("text8");
-        mList.add("text9");
-        mList.add("text10");
-        mList.add("text11");
-        mList.add("text12");
-        mRefreshListViewWidget.setAdapter(new DemoAdapter());
-        mRefreshListViewWidget.setRefreshListener(new RefreshListener() {
+        findViewById(R.id.button_listview).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onRefresh() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(4000);
-                            mRefreshListViewWidget.completeRefresh();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
-            }
-
-            @Override
-            public void onLoadMore() {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(4000);
-                            mRefreshListViewWidget.completeLoadMore();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).start();
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, ListViewDemoActivity.class));
             }
         });
-    }
-    
-    private List<String> mList = new ArrayList<>();
-    
-    private class DemoAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return mList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return mList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout
-                        .item_list_view, null);
+        findViewById(R.id.button_gridview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, GridViewDemoActivity.class));
             }
-            TextView textView = (TextView) convertView.findViewById(R.id.textview);
-            textView.setText(mList.get(position));
-            return convertView;
-        }
+        });
+        findViewById(R.id.button_scrollview).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, ScrollViewDemoActivity.class));
+            }
+        });
     }
     
 }

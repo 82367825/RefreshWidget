@@ -16,7 +16,7 @@ public interface FooterInterface {
     void onReleaseToLoadMore();
 
     /**
-     * 
+     * 正在加载
      */
     void onLoadMoreIng();
 

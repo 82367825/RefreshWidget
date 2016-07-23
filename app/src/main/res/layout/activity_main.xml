@@ -4,10 +4,22 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <com.zero.refreshwidgetlib.widget.RefreshListViewWidget
-        android:id="@+id/refresh_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </com.zero.refreshwidgetlib.widget.RefreshListViewWidget>
-    
+    <Button
+        android:id="@+id/button_listview"
+        android:text="show listview"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/button_gridview"
+        android:text="show gridview"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:id="@+id/button_scrollview"
+        android:text="show scrollview"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

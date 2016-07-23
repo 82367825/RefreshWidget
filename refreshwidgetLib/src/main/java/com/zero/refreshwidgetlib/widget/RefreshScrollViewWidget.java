@@ -1,6 +1,7 @@
 package com.zero.refreshwidgetlib.widget;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,24 +35,73 @@ public class RefreshScrollViewWidget extends BaseRefreshWidget implements
 
     private void initScrollView() {
         mLinearLayout = new LinearLayout(getContext());
+        mLinearLayout.setOrientation(VERTICAL);
         mLayoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
                 .LayoutParams.MATCH_PARENT);
         ((ScrollView)mContentView).addView(mLinearLayout, mLayoutParams);
     }
 
     @Override
-    public void addView(View child) {
+    public void addContentView(View child) {
         mLinearLayout.addView(child);
     }
 
     @Override
-    public void addView(View child, ViewGroup.LayoutParams params) {
-        mLinearLayout.addView(child, params);
+    public void addContentView(View view, LayoutParams layoutParams) {
+        mLinearLayout.addView(view, layoutParams);
     }
 
     @Override
-    public void removeView(View view) {
+    public void addContentView(View child, int position) {
+        mLinearLayout.addView(child, position);
+    }
+
+    @Override
+    public void removeContentView(View view) {
         mLinearLayout.addView(view);
+    }
+    
+
+    @Override
+    public void setOnClickListener(OnClickListener l) {
+        mContentView.setOnClickListener(l);
+    }
+
+    @Override
+    public void setOnFocusChangeListener(OnFocusChangeListener l) {
+        mContentView.setOnFocusChangeListener(l);
+    }
+
+    @Override
+    public void setOnScrollChangeListener(OnScrollChangeListener l) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mContentView.setOnScrollChangeListener(l);
+        }
+    }
+
+    @Override
+    public void addOnLayoutChangeListener(OnLayoutChangeListener listener) {
+        mContentView.addOnLayoutChangeListener(listener);
+    }
+
+    @Override
+    public void scrollBy(int x, int y) {
+        mContentView.scrollBy(x, y);
+    }
+
+    @Override
+    public void scrollTo(int x, int y) {
+        mContentView.scrollTo(x, y);
+    }
+
+    @Override
+    public int getContentScrollX() {
+        return mContentView.getScrollX();
+    }
+
+    @Override
+    public int getContentScrollY() {
+        return mContentView.getScrollY();
     }
 
     /**
@@ -70,7 +120,7 @@ public class RefreshScrollViewWidget extends BaseRefreshWidget implements
         View contentView = ((ScrollView)mContentView).getChildAt(0);
         return contentView.getMeasuredHeight() <= mContentView.getScrollY() + mContentView.getHeight();
     }
-
+    
 
     @Override
     protected View getContentView() {
@@ -79,21 +129,12 @@ public class RefreshScrollViewWidget extends BaseRefreshWidget implements
 
     @Override
     protected void makeContentViewToFooter() {
-        mContentView.post(new Runnable() {
-            @Override
-            public void run() {
-                ((ScrollView)mContentView).fullScroll(ScrollView.FOCUS_DOWN);
-            }
-        });
+        View contentView = ((ScrollView)mContentView).getChildAt(0);
+        int realHeight = contentView.getMeasuredHeight();
+        mContentView.scrollTo(0, realHeight - mContentView.getHeight());
     }
 
     @Override
     protected void makeContentViewRestore() {
-        mContentView.post(new Runnable() {
-            @Override
-            public void run() {
-                ((ScrollView)mContentView).fullScroll(ScrollView.FOCUS_UP);
-            }
-        });
     }
 }

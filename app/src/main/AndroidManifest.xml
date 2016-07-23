@@ -13,6 +13,12 @@
                 <action android:name="android.intent.action.MAIN"></action>
             </intent-filter>
         </activity>
+        <activity android:name=".demo.ListViewDemoActivity">
+        </activity>
+        <activity android:name=".demo.GridViewDemoActivity">
+        </activity>
+        <activity android:name=".demo.ScrollViewDemoActivity">
+        </activity>
     </application>
 
 </manifest>
