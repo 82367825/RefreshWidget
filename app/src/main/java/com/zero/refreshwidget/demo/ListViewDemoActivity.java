@@ -2,6 +2,7 @@ package com.zero.refreshwidget.demo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,16 +27,18 @@ import java.util.List;
 public class ListViewDemoActivity extends Activity {
 
     private RefreshListViewWidget mRefreshListViewWidget;
+    private ListViewAdapter mListViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listview);
         initData();
+        mListViewAdapter = new ListViewAdapter();
         mRefreshListViewWidget = (RefreshListViewWidget) findViewById(R.id.refresh_list);
         mRefreshListViewWidget.addHeaderView(new HeaderAnimView(ListViewDemoActivity.this));
         mRefreshListViewWidget.addFooterView(new FooterAnimView(ListViewDemoActivity.this));
-        mRefreshListViewWidget.setAdapter(new ListViewAdapter());
+        mRefreshListViewWidget.setAdapter(mListViewAdapter);
         mRefreshListViewWidget.setRefreshListener(new RefreshListener() {
             @Override
             public void onRefresh() {
@@ -70,7 +73,7 @@ public class ListViewDemoActivity extends Activity {
                 try {
                     /* 等待4秒 */
                     Thread.sleep(4000);
-                    mRefreshListViewWidget.completeRefresh();
+                    mainThreadRefreshData();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -86,14 +89,43 @@ public class ListViewDemoActivity extends Activity {
                 try {
                     /* 等待4秒 */
                     Thread.sleep(4000);
-                    mRefreshListViewWidget.completeLoadMore();
+                    mainThreadLoadMoreData();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
     }
+    
+    private Handler mHandler = new Handler();
 
+    /**
+     * 避免在子线程中操作UI
+     */
+    private void mainThreadRefreshData() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mRefreshListViewWidget.completeRefresh();
+                mListViewAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    /**
+     * 避免在子线程中操作UI
+     */
+    private void mainThreadLoadMoreData() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mList.add("text" + (mList.size()));
+                mRefreshListViewWidget.completeLoadMore();
+                mListViewAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+    
     /**
      * 测试的数据集合
      */

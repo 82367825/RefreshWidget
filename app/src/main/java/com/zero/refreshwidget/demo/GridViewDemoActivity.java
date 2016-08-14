@@ -2,6 +2,7 @@ package com.zero.refreshwidget.demo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,7 +76,7 @@ public class GridViewDemoActivity extends Activity {
                 try {
                     /* 等待4秒 */
                     Thread.sleep(4000);
-                    mRefreshGridViewWidget.completeRefresh();
+                    mainThreadRefreshData();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -91,14 +92,35 @@ public class GridViewDemoActivity extends Activity {
                 try {
                     /* 等待4秒 */
                     Thread.sleep(4000);
-                    mList.add("text" + mList.size());
-                    mListAdapter.notifyDataSetChanged();
-                    mRefreshGridViewWidget.completeLoadMore();
+                    mainThreadLoadMoreData();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
+    }
+
+    private Handler mHandler = new Handler();
+    
+    private void mainThreadRefreshData() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mRefreshGridViewWidget.completeRefresh();
+                mListAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void mainThreadLoadMoreData() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mList.add("text" + (mList.size()));
+                mRefreshGridViewWidget.completeLoadMore();
+                mListAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     /**
